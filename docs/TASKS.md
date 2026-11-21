@@ -8,7 +8,7 @@
 - [x] 6. `feat(backend): implement movies API with validation and OpenAPI docs` - POST/GET/PATCH, rewatch-order, 409 CIRCULAR_DEPENDENCY, openapi.yaml paths
 - [x] 7. `feat(backend): implement cinemas and booking quote endpoints` - cinemas API, booking, integration tests, openapi.yaml paths + docs drift test
 - [x] 8. `chore(frontend): scaffold Vite React app with API client` - Vite+TS, router, api/, layout
-- [ ] 9. `feat(frontend): add movies view with prerequisites and watched toggle`
+- [x] 9. `feat(frontend): add movies view with prerequisites and watched toggle`
 - [ ] 10. `feat(frontend): add rewatch plan and booking views` - progress bar, remaining time, "Not possible"
 - [ ] 11. `chore: add Dockerfiles, compose setup and seed data` - one-command `docker compose up`
 - [ ] 12. `docs: add README with data model diagram, assumptions and AI usage` - Mermaid ER, API list, Swagger link, run/test steps

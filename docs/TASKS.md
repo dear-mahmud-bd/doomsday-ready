@@ -11,4 +11,4 @@
 - [x] 9. `feat(frontend): add movies view with prerequisites and watched toggle`
 - [x] 10. `feat(frontend): add rewatch plan and booking views` - progress bar, remaining time, "Not possible"
 - [x] 11. `chore: add Dockerfiles, compose setup and seed data` - one-command `docker compose up`
-- [ ] 12. `docs: add README with data model diagram, assumptions and AI usage` - Mermaid ER, API list, Swagger link, run/test steps
+- [x] 12. `docs: add README with data model diagram, assumptions and AI usage` - Mermaid ER, API list, Swagger link, run/test steps

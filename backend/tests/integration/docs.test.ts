@@ -11,6 +11,9 @@ describe('Swagger Documentation & OpenAPI Spec', () => {
     expect(res.body.info).toBeDefined();
     expect(res.body.info.title).toBe('Doomsday Ready API');
     expect(res.body.paths).toHaveProperty('/health');
+    expect(res.body.paths).toHaveProperty('/movies');
+    expect(res.body.paths).toHaveProperty('/movies/{id}');
+    expect(res.body.paths).toHaveProperty('/movies/{id}/rewatch-order');
   });
 
   it('should serve Swagger UI at /api/docs/', async () => {

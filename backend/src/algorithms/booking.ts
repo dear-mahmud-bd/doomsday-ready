@@ -1,7 +1,7 @@
 import { BookingCalculationResult, BundleCount } from './types.js';
 
 /**
- * Coin-Change Booking Algorithm (Unbounded Knapsack / Exact Minimum Bundles)
+ * Seat Bundle Optimization Algorithm (Exact Minimum Bundles)
  *
  * Approach:
  * Solves the minimum seat bundle problem for a group size using Dynamic Programming.

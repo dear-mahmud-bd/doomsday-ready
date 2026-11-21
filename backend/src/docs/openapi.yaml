@@ -31,6 +31,177 @@ paths:
                   status:
                     type: string
                     example: ok
+  /movies:
+    get:
+      tags:
+        - Movies
+      summary: List all movies
+      description: Returns an array of all movies along with their prerequisites.
+      responses:
+        "200":
+          description: List of movies retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    post:
+      tags:
+        - Movies
+      summary: Create a new movie
+      description: Creates a new movie with optional prerequisite IDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieCreate'
+      responses:
+        "201":
+          description: Movie created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        "400":
+          description: Validation error or invalid prerequisite ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ValidationError:
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: runtime must be an integer between 1 and 300 minutes
+                InvalidPrerequisite:
+                  value:
+                    error:
+                      code: INVALID_PREREQUISITE
+                      message: Prerequisite movie ID 99 does not exist
+        "409":
+          description: Duplicate title or circular dependency
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                DuplicateTitle:
+                  value:
+                    error:
+                      code: DUPLICATE_TITLE
+                      message: A movie with this title already exists
+                CircularDependency:
+                  value:
+                    error:
+                      code: CIRCULAR_DEPENDENCY
+                      message: Setting this prerequisite would create a cyclic dependency
+  /movies/{id}:
+    get:
+      tags:
+        - Movies
+      summary: Get movie by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        "200":
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        "404":
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Movies
+      summary: Update movie or replace prerequisites
+      description: Updates movie attributes. If prerequisites array is supplied, it replaces the entire prerequisite list.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoviePatch'
+      responses:
+        "200":
+          description: Movie updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        "400":
+          description: Validation error or invalid prerequisite
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ValidationError:
+                  value:
+                    error:
+                      code: VALIDATION_ERROR
+                      message: releaseYear must be an integer between 1888 and 2100
+                InvalidPrerequisite:
+                  value:
+                    error:
+                      code: INVALID_PREREQUISITE
+                      message: Prerequisite movie ID 99 does not exist
+        "404":
+          $ref: '#/components/responses/NotFound'
+        "409":
+          description: Duplicate title or circular dependency
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                CircularDependency:
+                  value:
+                    error:
+                      code: CIRCULAR_DEPENDENCY
+                      message: Setting this prerequisite would create a cyclic dependency
+                DuplicateTitle:
+                  value:
+                    error:
+                      code: DUPLICATE_TITLE
+                      message: A movie with this title already exists
+  /movies/{id}/rewatch-order:
+    get:
+      tags:
+        - Movies
+      summary: Get MCU rewatch order for a target movie
+      description: Returns all transitive prerequisites topologically ordered, excluding target movie, with total count, watched count, and remaining runtime.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 8
+      responses:
+        "200":
+          description: Rewatch plan calculated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RewatchOrderResponse'
+        "404":
+          $ref: '#/components/responses/NotFound'
 components:
   schemas:
     ErrorResponse:

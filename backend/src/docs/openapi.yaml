@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: Doomsday Ready API
+  version: 1.0.0
+  description: API for MCU rewatch planning (topological sort) and opening-night seat booking (coin-change dynamic programming).
+servers:
+  - url: /api
+    description: API base path
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Movies
+    description: MCU movies and rewatch ordering
+  - name: Cinemas
+    description: Cinemas and seat bundle quotes
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Returns ok status confirming backend service is running.
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+              example: Resource not found
+    Movie:
+      type: object
+      required:
+        - id
+        - title
+        - releaseYear
+        - runtime
+        - watched
+        - prerequisites
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Iron Man
+        releaseYear:
+          type: integer
+          minimum: 1888
+          maximum: 2100
+          example: 2008
+        runtime:
+          type: integer
+          minimum: 1
+          maximum: 300
+          example: 126
+        watched:
+          type: boolean
+          example: false
+        prerequisites:
+          type: array
+          items:
+            type: integer
+          example: []
+    MovieCreate:
+      type: object
+      required:
+        - title
+        - releaseYear
+        - runtime
+      properties:
+        title:
+          type: string
+          example: The Avengers
+        releaseYear:
+          type: integer
+          example: 2012
+        runtime:
+          type: integer
+          example: 143
+        watched:
+          type: boolean
+          default: false
+          example: false
+        prerequisites:
+          type: array
+          items:
+            type: integer
+          example: [1, 2]
+    MoviePatch:
+      type: object
+      properties:
+        title:
+          type: string
+          example: The Avengers (Extended)
+        releaseYear:
+          type: integer
+          example: 2012
+        runtime:
+          type: integer
+          example: 145
+        watched:
+          type: boolean
+          example: true
+        prerequisites:
+          type: array
+          items:
+            type: integer
+          example: [1]
+    RewatchOrderResponse:
+      type: object
+      required:
+        - target
+        - order
+        - total
+        - watchedCount
+        - remainingRuntime
+      properties:
+        target:
+          type: object
+          required:
+            - id
+            - title
+          properties:
+            id:
+              type: integer
+              example: 8
+            title:
+              type: string
+              example: "Avengers: Doomsday"
+        order:
+          type: array
+          items:
+            $ref: '#/components/schemas/Movie'
+        total:
+          type: integer
+          example: 7
+        watchedCount:
+          type: integer
+          example: 4
+        remainingRuntime:
+          type: integer
+          example: 390
+    Cinema:
+      type: object
+      required:
+        - id
+        - name
+        - bundleSizes
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Stark Odeon
+        bundleSizes:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 500
+          minItems: 1
+          maxItems: 10
+          example: [2, 5]
+    CinemaCreate:
+      type: object
+      required:
+        - name
+        - bundleSizes
+      properties:
+        name:
+          type: string
+          example: Stark Odeon
+        bundleSizes:
+          type: array
+          items:
+            type: integer
+          example: [2, 5]
+    BundleCount:
+      type: object
+      required:
+        - size
+        - count
+      properties:
+        size:
+          type: integer
+          example: 5
+        count:
+          type: integer
+          example: 1
+    BookingResponse:
+      type: object
+      required:
+        - cinema
+        - groupSize
+        - possible
+      properties:
+        cinema:
+          type: object
+          required:
+            - id
+            - name
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Stark Odeon
+        groupSize:
+          type: integer
+          example: 11
+        possible:
+          type: boolean
+          example: true
+        totalBundles:
+          type: integer
+          example: 4
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/BundleCount'
+          example:
+            - size: 5
+              count: 1
+            - size: 2
+              count: 3
+  responses:
+    ValidationError:
+      description: Invalid payload or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: VALIDATION_ERROR
+              message: runtime must be an integer between 1 and 300
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: NOT_FOUND
+              message: Movie with specified id was not found
+    Conflict:
+      description: Conflict such as circular dependency or duplicate name/title
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            CircularDependency:
+              value:
+                error:
+                  code: CIRCULAR_DEPENDENCY
+                  message: Setting this prerequisite would create a cyclic dependency
+            DuplicateTitle:
+              value:
+                error:
+                  code: DUPLICATE_TITLE
+                  message: A movie with this title already exists

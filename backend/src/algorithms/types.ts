@@ -17,3 +17,23 @@ export interface RewatchPlanResult {
   watchedCount: number;
   remainingRuntime: number;
 }
+
+export interface BundleCount {
+  size: number;
+  count: number;
+}
+
+export interface BookingCalculationPossible {
+  possible: true;
+  totalBundles: number;
+  bundles: BundleCount[];
+}
+
+export interface BookingCalculationImpossible {
+  possible: false;
+}
+
+export type BookingCalculationResult =
+  | BookingCalculationPossible
+  | BookingCalculationImpossible;
+

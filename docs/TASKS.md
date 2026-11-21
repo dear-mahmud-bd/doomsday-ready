@@ -1,7 +1,7 @@
 # Tasks (1 task = 1 commit). Use skill `spec-driven-task`.
 
 - [x] 1. `chore: initialize repository structure and agent guidelines` - git init, folders, .gitignore, AGENTS.md, skills
-- [ ] 2. `docs: add specification, plan and task breakdown` - SPEC, PLAN, TASKS, DECISIONS (review/refine)
+- [x] 2. `docs: add specification, plan and task breakdown` - SPEC, PLAN, TASKS, DECISIONS (review/refine)
 - [ ] 3. `chore(backend): scaffold Express TypeScript app with DB schema and Swagger UI` - app/server, config, errorHandler, /api/health, migrations, `/api/docs` skeleton (swagger-api-docs)
 - [ ] 4. `feat(backend): add cycle detection and rewatch-order algorithms` - algorithms + tests first (algorithm-tdd)
 - [ ] 5. `feat(backend): add coin-change booking algorithm` - booking.ts + tests incl. greedy-fails case

@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: doomsday-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: doomsday
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doomsday"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: doomsday-api
+    environment:
+      PORT: 4000
+      NODE_ENV: production
+      DATABASE_URL: postgres://postgres:postgres@db:5432/doomsday
+      SEED_DATA: "true"
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: doomsday-web
+    ports:
+      - "5173:80"
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:

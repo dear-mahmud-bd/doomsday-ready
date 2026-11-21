@@ -10,5 +10,5 @@
 - [x] 8. `chore(frontend): scaffold Vite React app with API client` - Vite+TS, router, api/, layout
 - [x] 9. `feat(frontend): add movies view with prerequisites and watched toggle`
 - [x] 10. `feat(frontend): add rewatch plan and booking views` - progress bar, remaining time, "Not possible"
-- [ ] 11. `chore: add Dockerfiles, compose setup and seed data` - one-command `docker compose up`
+- [x] 11. `chore: add Dockerfiles, compose setup and seed data` - one-command `docker compose up`
 - [ ] 12. `docs: add README with data model diagram, assumptions and AI usage` - Mermaid ER, API list, Swagger link, run/test steps

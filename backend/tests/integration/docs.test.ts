@@ -14,6 +14,8 @@ describe('Swagger Documentation & OpenAPI Spec', () => {
     expect(res.body.paths).toHaveProperty('/movies');
     expect(res.body.paths).toHaveProperty('/movies/{id}');
     expect(res.body.paths).toHaveProperty('/movies/{id}/rewatch-order');
+    expect(res.body.paths).toHaveProperty('/cinemas');
+    expect(res.body.paths).toHaveProperty('/cinemas/{id}/booking');
   });
 
   it('should serve Swagger UI at /api/docs/', async () => {

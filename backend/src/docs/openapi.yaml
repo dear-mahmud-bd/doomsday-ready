@@ -202,6 +202,122 @@ paths:
                 $ref: '#/components/schemas/RewatchOrderResponse'
         "404":
           $ref: '#/components/responses/NotFound'
+  /cinemas:
+    get:
+      tags:
+        - Cinemas
+      summary: List all cinemas
+      description: Returns an array of all registered cinemas with their available bundle sizes.
+      responses:
+        "200":
+          description: List of cinemas retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cinema'
+    post:
+      tags:
+        - Cinemas
+      summary: Register a new cinema
+      description: Creates a cinema with 1-10 distinct bundle sizes (each between 1 and 500).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CinemaCreate'
+      responses:
+        "201":
+          description: Cinema created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cinema'
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: VALIDATION_ERROR
+                  message: bundleSizes must be an array of 1 to 10 integers
+        "409":
+          description: Duplicate cinema name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: DUPLICATE_NAME
+                  message: A cinema with this name already exists
+  /cinemas/{id}/booking:
+    get:
+      tags:
+        - Cinemas
+      summary: Calculate optimal seat bundle quote
+      description: Returns the minimum number of seat bundles summing exactly to groupSize, or reports impossible.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: groupSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10000
+          example: 11
+      responses:
+        "200":
+          description: Seat bundle quote calculated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+              examples:
+                PossibleQuote:
+                  summary: Exact seating possible
+                  value:
+                    cinema:
+                      id: 1
+                      name: Stark Odeon
+                    groupSize: 11
+                    possible: true
+                    totalBundles: 4
+                    bundles:
+                      - size: 5
+                        count: 1
+                      - size: 2
+                        count: 3
+                ImpossibleQuote:
+                  summary: Exact seating impossible
+                  value:
+                    cinema:
+                      id: 1
+                      name: Stark Odeon
+                    groupSize: 7
+                    possible: false
+        "400":
+          description: Invalid group size or query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: VALIDATION_ERROR
+                  message: groupSize must be an integer between 1 and 10000
+        "404":
+          $ref: '#/components/responses/NotFound'
 components:
   schemas:
     ErrorResponse:

@@ -6,7 +6,7 @@
 - [x] 4. `feat(backend): add cycle detection and rewatch-order algorithms` - algorithms + tests first (algorithm-tdd)
 - [x] 5. `feat(backend): add coin-change booking algorithm` - booking.ts + tests incl. greedy-fails case
 - [x] 6. `feat(backend): implement movies API with validation and OpenAPI docs` - POST/GET/PATCH, rewatch-order, 409 CIRCULAR_DEPENDENCY, openapi.yaml paths
-- [ ] 7. `feat(backend): implement cinemas and booking quote endpoints` - cinemas API, booking, integration tests, openapi.yaml paths + docs drift test
+- [x] 7. `feat(backend): implement cinemas and booking quote endpoints` - cinemas API, booking, integration tests, openapi.yaml paths + docs drift test
 - [ ] 8. `chore(frontend): scaffold Vite React app with API client` - Vite+TS, router, api/, layout
 - [ ] 9. `feat(frontend): add movies view with prerequisites and watched toggle`
 - [ ] 10. `feat(frontend): add rewatch plan and booking views` - progress bar, remaining time, "Not possible"

@@ -18,10 +18,15 @@ export async function runMigrations(): Promise<void> {
       );
     `);
 
-    const migrationsDir = path.join(__dirname, 'migrations');
+    let migrationsDir = path.join(__dirname, 'migrations');
     if (!fs.existsSync(migrationsDir)) {
-      await client.query('COMMIT');
-      return;
+      const fallbackDir = path.join(process.cwd(), 'src', 'db', 'migrations');
+      if (fs.existsSync(fallbackDir)) {
+        migrationsDir = fallbackDir;
+      } else {
+        await client.query('COMMIT');
+        return;
+      }
     }
 
     const files = fs.readdirSync(migrationsDir).filter((f) => f.endsWith('.sql')).sort();

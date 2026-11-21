@@ -10,7 +10,13 @@ const __dirname = path.dirname(__filename);
 
 export const swaggerRouter = Router();
 
-const yamlPath = path.join(__dirname, 'openapi.yaml');
+let yamlPath = path.join(__dirname, 'openapi.yaml');
+if (!fs.existsSync(yamlPath)) {
+  const fallbackPath = path.join(process.cwd(), 'src', 'docs', 'openapi.yaml');
+  if (fs.existsSync(fallbackPath)) {
+    yamlPath = fallbackPath;
+  }
+}
 let openapiDoc: Record<string, unknown> = {};
 
 try {
